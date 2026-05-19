@@ -1,0 +1,161 @@
+heads:
+  - mythic: Calliope
+    slug: brand-strategist
+    authority: gatekeeper
+    model_tier: opus
+    scope: "Brand strategy, brief intake, stakeholder communications, creative direction"
+    skills:
+      - creative-brief-protocol
+      - brand-safety
+      - executive-protocol
+      - stakeholder-comms
+    tools:
+      - hydra-creative.gemini-content
+      - eights.memory.recall
+      - eights.memory.remember
+      - rlm.output.write
+      - rlm.output.read
+
+  - mythic: Erato
+    slug: copywriter
+    authority: execute
+    model_tier: sonnet
+    scope: "Long-form and short-form copy; voice adaptation per platform"
+    skills:
+      - creative-brief-protocol
+      - platform-voice
+    tools:
+      - hydra-creative.gemini-content
+      - rlm.output.write
+
+  - mythic: Polyhymnia
+    slug: content-strategist
+    authority: execute
+    model_tier: sonnet
+    scope: "Content calendar, pillar-to-repurpose planning, editorial architecture"
+    skills:
+      - editorial-calendar
+      - semantic-clustering
+    tools:
+      - hydra-creative.gemini-content
+      - rlm.output.write
+      - rlm.output.read
+
+  - mythic: Terpsichore
+    slug: social-community
+    authority: execute
+    model_tier: sonnet
+    scope: "Platform-native social content, community engagement, tone calibration"
+    skills:
+      - platform-voice
+      - editorial-calendar
+    tools:
+      - hydra-creative.gemini-content
+      - hydra-creative.gemini-image
+      - rlm.output.write
+
+  - mythic: Euterpe
+    slug: paid-acquisition
+    authority: execute
+    model_tier: sonnet
+    scope: "Paid channel strategy, ROAS optimization, ad creative specification"
+    skills:
+      - channel-arbitrage
+      - financial-frameworks
+    tools:
+      - hydra-creative.gemini-content
+      - hydra-creative.gemini-image
+      - rlm.output.write
+
+  - mythic: Clio
+    slug: pr-earned
+    authority: execute
+    model_tier: sonnet
+    scope: "Press angles, embargo management, press-kit assembly, earned media"
+    skills:
+      - press-kit-protocol
+      - stakeholder-comms
+    tools:
+      - hydra-creative.gemini-content
+      - rlm.output.write
+
+  - mythic: Urania
+    slug: seo-discovery
+    authority: execute
+    model_tier: sonnet
+    scope: "Semantic topic clusters, entity SEO, search-intent mapping"
+    skills:
+      - semantic-clustering
+      - editorial-calendar
+    tools:
+      - hydra-creative.gemini-content
+      - rlm.output.write
+
+  - mythic: Helios
+    slug: photo-cinema
+    authority: gatekeeper
+    model_tier: opus
+    scope: "Visual direction, shot lists, key art, video synthesis, C2PA governance"
+    skills:
+      - shot-list-protocol
+      - color-science
+      - comfyui-workflow-recipes
+      - brand-safety
+    tools:
+      - hydra-creative.comfyui
+      - hydra-creative.gemini-image
+      - rlm.output.write
+      - eights.memory.recall
+      - eights.memory.remember
+
+sub_agents:
+  - slug: video-synth
+    parent: helios
+    authority: execute
+    model_tier: haiku
+    skills:
+      - comfyui-workflow-recipes
+      - shot-list-protocol
+    tools:
+      - hydra-creative.comfyui
+      - hydra-creative.gemini-image
+
+  - slug: audio-foley
+    parent: helios
+    authority: execute
+    model_tier: haiku
+    skills:
+      - audio-production
+    tools:
+      - rlm.output.write
+
+  - slug: music-score
+    parent: helios
+    authority: execute
+    model_tier: haiku
+    skills:
+      - audio-production
+      - editorial-calendar
+    tools:
+      - rlm.output.write
+
+  - slug: dialogue-mix
+    parent: helios
+    authority: execute
+    model_tier: haiku
+    skills:
+      - audio-production
+    tools:
+      - rlm.output.write
+
+  - slug: governance-c2pa
+    parent: helios
+    authority: execute
+    hitl_trigger: true
+    model_tier: haiku
+    skills:
+      - brand-safety
+      - creative-brief-protocol
+    tools:
+      - rlm.output.write
+      - eights.memory.remember

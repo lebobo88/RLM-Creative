@@ -1,0 +1,19 @@
+# codex bridge failure
+timestamp_unix_ms: 1779213060404
+cwd: C:\AiAppDeployments\RLM-Creative
+bin: codex
+attempts: 2
+final_exit_code: 1
+  attempt[0]: exit=1 wall_ms=16669 class=transient
+  attempt[1]: exit=1 wall_ms=2729 class=transient
+cli_args_sanitized: ["exec","--json","--cd","C:\\AiAppDeployments\\RLM-Creative","--sandbox","read-only","--model","gpt-5.4","--skip-git-repo-check","--config","model_reasoning_effort=low","--output-schema","~\\.pair-programmer\\sandboxes\\codex-8X4KutJy\\schema.json","-"]
+cli_args_total_chars: 217
+
+## stderr (full)
+
+
+## stdout (full; codex --json emits errors here)
+{"type":"thread.started","thread_id":"019e415c-bfc7-7182-a143-9b2d7e5a438a"}
+{"type":"turn.started"}
+{"type":"error","message":"{\n  \"type\": \"error\",\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"message\": \"[ObjectParam] [text.format.schema] [invalid_type] Invalid type for 'text.format.schema': expected an object, but got a string instead.\"\n  },\n  \"status\": 400\n}"}
+{"type":"turn.failed","error":{"message":"{\n  \"type\": \"error\",\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"message\": \"[ObjectParam] [text.format.schema] [invalid_type] Invalid type for 'text.format.schema': expected an object, but got a string instead.\"\n  },\n  \"status\": 400\n}"}}

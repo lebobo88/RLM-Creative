@@ -1,0 +1,50 @@
+profile_name: creative-media
+description: >
+  Pair-programmer profile for the RLM-Creative Eight Garland Heads studio.
+  Governs artifact requirements, quality rubrics, missability checks, and
+  budget caps for /pp:run and /pp:team sessions in this project.
+
+required_artifacts:
+  - creative_brief
+  - shot_list
+  - brand_safety_review
+  - asset_inventory
+  - launch_runbook
+
+required_rubrics:
+  - brand-consistency
+  - ip-clearance
+  - media-cost-cap
+  - wcag-2.2-aa
+
+missability_checks:
+  - id: doc-ownership
+    description: "Every operational doc names an owner team or person."
+    applies_to: [runbook, user_doc, content_guide]
+  - id: hitl-documented
+    description: "All HITL triggers are listed with conditions in AGENTS.md."
+    applies_to: [agents_md, squad_yaml]
+  - id: output-dir-contract
+    description: "Every rlm.output.write call uses the approved output_dir pattern."
+    applies_to: [commands, agents]
+  - id: asset-write-restriction
+    description: "Asset file writes (mp4/mov/wav/flac/png/jpg) are restricted to Helios sub-crew."
+    applies_to: [agents_md, hooks]
+  - id: memory-domain-tag
+    description: "All eights.memory.* calls include domain='creative' and at least one scope tag."
+    applies_to: [agents, commands]
+  - id: c2pa-gate
+    description: "All approved assets receive C2PA signing before rlm.output.write to assetlib:approved."
+    applies_to: [governance_c2pa, helios]
+  - id: render-budget-gate
+    description: "AssetJobs over $200 are blocked without HITL approval."
+    applies_to: [squad_yaml, gates]
+
+taxonomy_sections:
+  - "4.1"
+  - "4.2"
+  - "4.4"
+  - "4.11"
+  - "4.13"
+
+budget_cap_usd: 75
