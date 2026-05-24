@@ -4,23 +4,15 @@ How Hydra routes a `CreativeBrief` into the Eight Garland Heads squad and manage
 
 ## squad.yaml location
 
-Canonical source:
+Canonical source: `squad.yaml` at this repository's root.
 
-```
-C:\AiAppDeployments\RLM-Creative\squad.yaml
-```
-
-Hydra reads this via the `source_pack` field in its own copy at:
-
-```
-C:\AiAppDeployments\Hydra\squads\creative\squad.yaml
-```
+Hydra reads this via the `source_pack` field in its own copy at `squads/creative/squad.yaml` in the [Hydra repository](https://github.com/lebobo88/Hydra).
 
 The Hydra copy MUST be kept in sync with (or symlinked to) the RLM-Creative canonical. RLM-Creative owns the contract; Hydra is a consumer.
 
 ## CreativeBrief envelope contract
 
-Schema lives in `C:\AiAppDeployments\Hydra\hydra_core\schemas.py:CreativeBrief`. Do not modify it - the shape is frozen for cross-squad compatibility.
+Schema lives in `hydra_core/schemas.py:CreativeBrief` in the [Hydra repository](https://github.com/lebobo88/Hydra). Do not modify it - the shape is frozen for cross-squad compatibility.
 
 ```python
 class CreativeBrief(HydraEnvelope):
@@ -85,7 +77,7 @@ Hydra reads `state.pending_hitl` options and re-enters the squad at the interrup
 
 ## MCP shim - rlm_creative/server.py
 
-Path: `C:\AiAppDeployments\Hydra\mcp_servers\rlm_creative\server.py`
+Path: `mcp_servers/rlm_creative/server.py` in the [Hydra repository](https://github.com/lebobo88/Hydra)
 
 | Tool | Signature | Description |
 |---|---|---|
@@ -106,7 +98,7 @@ Root resolved via `HYDRA_RLM_ROOT` env var. For RLM-Creative, set:
   "command": "python",
   "args": ["-m", "mcp_servers.rlm_creative"],
   "cwd": "${CLAUDE_PLUGIN_ROOT}",
-  "env": { "HYDRA_RLM_ROOT": "C:/AiAppDeployments/RLM-Creative" }
+  "env": { "HYDRA_RLM_ROOT": "<path-to-your-RLM-Creative-clone>" }
 }
 ```
 
@@ -125,7 +117,7 @@ Mirrored from `CONTRIBUTING-SQUADS.md` §h. Check all boxes before flipping `ent
 - [ ] Adapter calls `governance.record_cost(state, usd, tokens)` after every model call.
 - [ ] Adapter wraps outbound text in `governance.redact_for_squad_boundary(...)`.
 - [ ] Results persisted via `memory.append_episodic(...)`; only `MemoryRef` handles cross squad boundaries.
-- [ ] `HYDRA_RLM_ROOT` in `.mcp.json` points at `C:/AiAppDeployments/RLM-Creative`.
+- [ ] `HYDRA_RLM_ROOT` in `.mcp.json` points at the RLM-Creative repository root.
 - [ ] Smoke run: `python -m hydra_core.cli run "Draft a campaign" --squad creative` produces a `DECISION_RECORD`.
 - [ ] `/hydra:replay <workflow_id>` reconstructs end-to-end.
 - [ ] `pre-asset-write.ps1` and `post-render-validate.ps1` registered in `.claude/settings.json` or `hooks.json`.

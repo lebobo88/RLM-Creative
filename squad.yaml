@@ -6,7 +6,7 @@ description: >
   Urania, Helios) plus five Helios sub-agents (video-synth, audio-foley, music-score,
   dialogue-mix, governance-c2pa). Replaces the generic Creative & Production squad.
   Wired to the RLM-Creative source pack and the Hydra orchestrator.
-source_pack: C:\AiAppDeployments\RLM-Creative
+source_pack: .
 entrypoint: claude-skill
 industries:
   - media
@@ -107,7 +107,7 @@ agents:
     parent: photo-cinema
     role: "IP Governance & C2PA Signing"
     authority: execute
-    model_tier: haiku
+    model_tier: opus
     hitl_trigger: true
     notes: "HITL required on IP-clearance failure, brand-safety failure, or any asset pending C2PA signing."
     agent_file: .claude/agents/helios-crew/governance-c2pa.md

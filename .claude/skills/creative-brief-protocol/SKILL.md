@@ -91,6 +91,6 @@ If the inbound request is under-specified, Calliope MUST send back these questio
 
 ## References
 
-- Schema: `C:\AiAppDeployments\Hydra\hydra_core\schemas.py` (`CreativeBrief`)
+- Schema: `hydra_core/schemas.py` in the [Hydra repository](https://github.com/lebobo88/Hydra) (`CreativeBrief`)
 - Upstream mapping: `integrations/executive-suite.md`
 - Memory contract: `integrations/eights.md`

@@ -2,7 +2,7 @@
 
 **Owner:** RLM Creative Operations  
 **Version:** 1.0.0  
-**Applies to:** All agents, sub-agents, and tools operating within `C:\AiAppDeployments\RLM-Creative\`
+**Applies to:** All agents, sub-agents, and tools operating within this repository
 
 This file is the authoritative behavioral contract for the Eight Garland Heads studio. Any agent — whether invoked via Hydra, Claude Code, or pair-programmer — MUST comply with the rules in this file. Contradictions between this file and any downstream config are resolved in favor of this file.
 
@@ -139,8 +139,8 @@ HITL triggers are also logged as governance episodes in TheEights memory (`domai
 
 | Tier | Agents |
 |---|---|
-| opus | Calliope, governance-c2pa |
-| sonnet | Erato, Polyhymnia, Terpsichore, Euterpe, Clio, Urania, Helios |
+| opus | Calliope, Helios, governance-c2pa |
+| sonnet | Erato, Polyhymnia, Terpsichore, Euterpe, Clio, Urania |
 | haiku | video-synth, audio-foley, music-score, dialogue-mix |
 
 Agents MAY escalate to a higher tier for a single turn by requesting it in the task envelope. Escalation MUST be logged.

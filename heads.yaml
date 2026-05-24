@@ -152,7 +152,7 @@ sub_agents:
     parent: helios
     authority: execute
     hitl_trigger: true
-    model_tier: haiku
+    model_tier: opus
     skills:
       - brand-safety
       - creative-brief-protocol

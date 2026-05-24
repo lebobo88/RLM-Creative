@@ -4,9 +4,7 @@ How a strategic marketing decision made inside ExecutiveSuite flows into the Eig
 
 ## CMO agent location
 
-```
-C:\AiAppDeployments\ExecutiveSuite\.claude\agents\cmo.md
-```
+`.claude/agents/cmo.md` in the [ExecutiveSuite repository](https://github.com/lebobo88/ExecutiveSuite)
 
 The CMO agent is named `cmo` and operates under the `executive-protocol` skill. Output dir is `output/marketing/`. Referred to as **Hermes** in architectural diagrams; the file slug remains `cmo`.
 

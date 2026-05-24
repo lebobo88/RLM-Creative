@@ -1,7 +1,7 @@
 # Creative Constitution
 
 **Owner:** RLM Creative Operations  
-**Applies to:** All agents, sub-agents, and automated pipelines in `C:\AiAppDeployments\RLM-Creative\`  
+**Applies to:** All agents, sub-agents, and automated pipelines in this repository  
 **Status:** Active  
 **Last updated:** 2026-05-19
 

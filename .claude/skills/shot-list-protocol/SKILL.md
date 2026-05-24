@@ -117,6 +117,6 @@ Rule of thumb: shots/min = 60 / average_cut_seconds. Hand-edit if narrative beat
 
 ## References
 
-- Schema: `C:\AiAppDeployments\Hydra\hydra_core\schemas.py` (`Shot`, `ShotList`)
+- Schema: `hydra_core/schemas.py` in the [Hydra repository](https://github.com/lebobo88/Hydra) (`Shot`, `ShotList`)
 - Mood + grade: `color-science`
 - Render: `comfyui-workflow-recipes`

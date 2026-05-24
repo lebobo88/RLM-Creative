@@ -89,7 +89,7 @@ $eventLine = '{"ts":"' + $ts + '","agent":"' + $safeAgent + '","tool":"' + $safe
 # ---------- append to events.jsonl -------------------------------------------
 
 $projectRoot = $env:HYDRA_RLM_CREATIVE_ROOT
-if (-not $projectRoot) { $projectRoot = 'C:\AiAppDeployments\RLM-Creative' }
+if (-not $projectRoot) { $projectRoot = $PSScriptRoot | Split-Path | Split-Path }
 
 $eventsDir  = Join-Path $projectRoot 'RLM\progress'
 $eventsFile = Join-Path $eventsDir   'events.jsonl'
