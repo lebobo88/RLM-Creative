@@ -151,7 +151,6 @@ If no recipe fits, escalate to Helios; do not improvise an unversioned workflow 
 
 ## References
 
-- comfyui agent: `.claude/agents/comfyui.md` in the [RLM-CLI-Starter repository](https://github.com/lebobo88/RLM-CLI-Starter) (reused as tool)
 - Color-management: `color-science`
 - Shot grammar: `shot-list-protocol`
 - Governance: `brand-safety`, `governance-c2pa` sub-agent

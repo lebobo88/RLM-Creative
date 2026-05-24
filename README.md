@@ -375,4 +375,3 @@ Strict access control enforced by the `pre-asset-write` hook:
 | [TheEights](https://github.com/lebobo88/TheEights) | Shared memory, evolution, and governance service |
 | [AgentSmith](https://github.com/lebobo88/AgentSmith) | Cross-project agent governance, inspection, and quarantine |
 | [pair-programmer](https://github.com/lebobo88/pair-programmer) | AI-assisted code quality harness with rubric-based judging |
-| [RLM-CLI-Starter](https://github.com/lebobo88/RLM-CLI-Starter) | CLI starter template for RLM ecosystem projects |
