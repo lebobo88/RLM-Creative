@@ -1,0 +1,83 @@
+apiVersion: agentmesh/v1
+kind: SiblingManifest
+
+metadata:
+  id: rlm-creative
+  displayName: "RLM Creative Studio"
+  version: "1.0.0"
+  description: "Creative production AI studio. Thin MCP shim via Hydra rlm_creative server."
+  # backendsKey: gateway flat-dict key.
+  # Source: ~/.hydra/backends.json — "rlm_creative" entry.
+  backendsKey: "rlm_creative"
+
+runtime:
+  type: python-langgraph
+  # Source: ~/.hydra/backends.json — "command": "python", "args": ["-m","mcp_servers.rlm_creative"]
+  entrypoint: "mcp_servers/rlm_creative/__main__.py"
+  cwd: "C:/AiAppDeployments/Hydra"
+  # Source: ~/.hydra/backends.json "rlm_creative" env block.
+  env:
+    PYTHONPATH: "C:/AiAppDeployments/Hydra"
+    HYDRA_RLM_ROOT: "C:/AiAppDeployments/RLM-Creative"
+  healthProbe:
+    type: mcp-tool-call
+    # "rlm.ping" is the dedicated health probe.
+    # Source: Hydra/mcp_servers/rlm_creative/server.py line 75 — "rlm.ping": ping
+    tool: "rlm.ping"
+    intervalMs: 20000
+    timeoutMs: 8000
+    failureThreshold: 3
+
+mcp:
+  endpoint:
+    type: stdio
+  # REAL tool names from Hydra/mcp_servers/rlm_creative/server.py — _tool_handlers() return dict.
+  # Source: server.py lines 66-76.
+  tools:
+    - "rlm.skill.list"
+    - "rlm.skill.get"
+    - "rlm.command.list"
+    - "rlm.command.get"
+    - "rlm.agent.list"
+    - "rlm.agent.get"
+    - "rlm.output.write"
+    - "rlm.output.read"
+    - "rlm.ping"
+
+lifecycle:
+  startupDependencies:
+    - "hydra"
+  startTimeoutMs: 30000
+  gracefulShutdownMs: 10000
+  crashLoopBreaker:
+    threshold: 5
+    windowMs: 60000
+
+audit:
+  # "rlm.output.read" retrieves creative output artifacts for audit stitching.
+  # Source: server.py line 74 — "rlm.output.read": output_read
+  # Formal audit federation routes through TheEights per governance precedence.
+  # See manifests/GOVERNANCE-ROUTING.md §rlm-creative for details.
+  exportTool: "rlm.output.read"
+  dedupeKeyField: "relative"
+
+governance:
+  # Constitution: RLM creative-constitution.
+  # Verified to exist: C:/AiAppDeployments/RLM-Creative/RLM/specs/creative-constitution.md
+  # Runtime.cwd is C:/AiAppDeployments/Hydra.
+  # Path traversal from Hydra cwd:
+  # resolve(join("C:/AiAppDeployments/Hydra","../RLM-Creative/RLM/specs/creative-constitution.md"))
+  # = C:/AiAppDeployments/RLM-Creative/RLM/specs/creative-constitution.md (correct).
+  #
+  # VALIDATOR FRICTION NOTE (2026-06-04):
+  # Same dotdot-traversal consideration as xenia.mesh-manifest.yaml.
+  # The constitutionPath is safe against the current validator (no dotdot-reject rule).
+  # P9 fix path: schema metadata.constitutionCwd + relative constitutionPath.
+  # See manifests/GOVERNANCE-ROUTING.md §validator-friction.
+  constitutionPath: "../RLM-Creative/RLM/specs/creative-constitution.md"
+  # rlm_creative server has no dedicated attest tool.
+  # "rlm.ping" confirms MCP connectivity only.
+  # Formal constitution hash attestation routes through TheEights
+  # (eights.constitution.attest with consumer="rlm-creative") per governance precedence.
+  # See manifests/GOVERNANCE-ROUTING.md §rlm-creative.
+  attestTool: "rlm.ping"
