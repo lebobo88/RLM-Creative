@@ -105,6 +105,7 @@ heads:
       - hydra-creative.comfyui
       - hydra-creative.gemini-image
       - rlm.output.write
+      - rlm.output.read
       - eights.memory.recall
       - eights.memory.remember
 
@@ -158,4 +159,5 @@ sub_agents:
       - creative-brief-protocol
     tools:
       - rlm.output.write
+      - eights.memory.recall
       - eights.memory.remember

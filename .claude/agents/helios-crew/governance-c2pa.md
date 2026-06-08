@@ -3,8 +3,9 @@ name: governance-c2pa
 description: IP risk scoring, brand-safety review, C2PA signing for all approved assets. Has HITL trigger authority.
 model: claude-opus-4-7
 tools:
-  - eights.memory.recall
   - rlm.output.write
+  - eights.memory.recall
+  - eights.memory.remember
 disallowedTools: []
 maxTurns: 15
 context:

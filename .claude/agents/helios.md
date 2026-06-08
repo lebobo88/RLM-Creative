@@ -11,6 +11,7 @@ tools:
   - mcp__hydra-creative__comfyui
   - mcp__hydra-creative__gemini_image
   - mcp__eights-memory__recall
+  - mcp__eights-memory__remember
 disallowedTools: []
 maxTurns: 40
 context:

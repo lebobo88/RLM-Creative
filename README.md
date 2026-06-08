@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status: Active" />
   <img src="https://img.shields.io/badge/agents-13-blue" alt="13 Agents" />
-  <img src="https://img.shields.io/badge/skills-10-blue" alt="10 Skills" />
+  <img src="https://img.shields.io/badge/skills-11-blue" alt="11 Skills" />
   <img src="https://img.shields.io/badge/commands-3-blue" alt="3 Commands" />
   <img src="https://img.shields.io/badge/license-proprietary-lightgrey" alt="License" />
 </p>
@@ -302,7 +302,7 @@ RLM-Creative/
 ├── .claude/
 │   ├── agents/                      # 8 head agents + helios-crew/ (5 sub-agents)
 │   ├── commands/                    # /creative-campaign, /photo-direction, /brand-refresh
-│   ├── skills/                      # 10 reusable skill modules
+│   ├── skills/                      # 11 reusable skill modules
 │   └── hooks/                       # PowerShell enforcement hooks
 ├── RLM/
 │   ├── prompts/                     # 8 phase prompt templates (01–08)
@@ -328,7 +328,7 @@ RLM-Creative/
 
 ## Skills
 
-RLM-Creative ships with 10 reusable skill modules under `.claude/skills/`:
+RLM-Creative ships with 11 reusable skill modules under `.claude/skills/`:
 
 | Skill | Used by | Purpose |
 |---|---|---|
@@ -342,6 +342,9 @@ RLM-Creative ships with 10 reusable skill modules under `.claude/skills/`:
 | `shot-list-protocol` | Helios, video-synth | ShotList schema, camera/lens grammar, pacing rules |
 | `color-science` | Helios | LUTs, white-balance, mood-driven grading |
 | `comfyui-workflow-recipes` | Helios, video-synth | Curated ComfyUI workflow recipes with cost estimates |
+| `audio-production` | audio-foley, music-score, dialogue-mix | Spectral allocation, sync/timing, stems, loudness & mix manifests |
+
+> **Skill resolution: Hydra vs. standalone.** Three skills referenced by the crew — `executive-protocol`, `stakeholder-comms`, and `financial-frameworks` — are **not** shipped in this repo. They are shared modules provided by the Hydra mesh / sibling squads and resolve when RLM-Creative runs under Hydra orchestration. In **standalone Claude Code mode**, only the 11 local skills above resolve; the three shared skills are unavailable unless the corresponding squad packs are installed at user scope.
 
 ---
 
