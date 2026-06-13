@@ -14,11 +14,11 @@ runtime:
   type: python-langgraph
   # Source: ~/.hydra/backends.json — "command": "python", "args": ["-m","mcp_servers.rlm_creative"]
   entrypoint: "mcp_servers/rlm_creative/__main__.py"
-  cwd: "C:/AiAppDeployments/Hydra"
+  cwd: "${HYDRA_ROOT}"
   # Source: ~/.hydra/backends.json "rlm_creative" env block.
   env:
-    PYTHONPATH: "C:/AiAppDeployments/Hydra"
-    HYDRA_RLM_ROOT: "C:/AiAppDeployments/RLM-Creative"
+    PYTHONPATH: "${HYDRA_ROOT}"
+    HYDRA_RLM_ROOT: "${HYDRA_RLM_ROOT}"
   healthProbe:
     type: mcp-tool-call
     # "rlm.ping" is the dedicated health probe.
@@ -63,11 +63,11 @@ audit:
 
 governance:
   # Constitution: RLM creative-constitution.
-  # Verified to exist: C:/AiAppDeployments/RLM-Creative/RLM/specs/creative-constitution.md
-  # Runtime.cwd is C:/AiAppDeployments/Hydra.
+  # Verified to exist: ${HYDRA_RLM_ROOT}/RLM/specs/creative-constitution.md
+  # Runtime.cwd is ${HYDRA_ROOT}.
   # Path traversal from Hydra cwd:
-  # resolve(join("C:/AiAppDeployments/Hydra","../RLM-Creative/RLM/specs/creative-constitution.md"))
-  # = C:/AiAppDeployments/RLM-Creative/RLM/specs/creative-constitution.md (correct).
+  # resolve(join("${HYDRA_ROOT}","../RLM-Creative/RLM/specs/creative-constitution.md"))
+  # = ${HYDRA_RLM_ROOT}/RLM/specs/creative-constitution.md (correct).
   #
   # VALIDATOR FRICTION NOTE (2026-06-04):
   # Same dotdot-traversal consideration as xenia.mesh-manifest.yaml.
