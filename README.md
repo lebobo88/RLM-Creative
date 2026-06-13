@@ -243,20 +243,42 @@ Calliope-led brand audit and reposition.
 
 ## Ecosystem Integration
 
+RLM-Creative is the **garland** squad — one of **nine sibling AI systems** bound together by a tenth layer, **AgentMesh**, the governed control plane of the mesh. The diagram below places RLM-Creative as the focal node and shows every sibling. Governance authority always flows **TheEights → AgentSmith → Hydra**; AgentMesh routes and observes but arbitrates nothing.
+
 ```mermaid
 flowchart LR
-    ES["<b>ExecutiveSuite</b><br/>Strategic Decisions"]
-    HY["<b>Hydra</b><br/>Orchestrator"]
-    RC["<b>RLM-Creative</b><br/>Creative Studio"]
-    TE["<b>TheEights</b><br/>Memory & Evolution"]
-    PP["<b>pair-programmer</b><br/>Code Quality"]
-    AS["<b>AgentSmith</b><br/>Governance"]
+    subgraph SUBSTRATE["Governance & Substrate"]
+        TE["<b>TheEights</b><br/>memory · audit · identity<br/>governance · root of trust"]
+        AS["<b>AgentSmith</b><br/>N1..N10 invariants<br/>quarantine · sentinel"]
+    end
+
+    subgraph ORCH["Orchestration & Engineering"]
+        HY["<b>Hydra</b><br/>multi-squad supervisor"]
+        PP["<b>pair-programmer</b><br/>best-of-N engineering"]
+    end
+
+    subgraph SQUADS["Squad Source-Packs"]
+        RC["<b>RLM-Creative</b><br/>garland · creative studio"]
+        ES["<b>ExecutiveSuite</b><br/>executive squad"]
+        MB["<b>MarketBliss</b><br/>5 marketing-* squads"]
+        SEN["<b>Senate</b><br/>legal-compliance · the Curia"]
+        XEN["<b>Xenia</b><br/>customer-support · the Hearth"]
+    end
+
+    AM["<b>AgentMesh</b><br/>binding control plane<br/>registry · lifecycle · audit edge"]
 
     ES -->|CSuiteDecisionPacket| HY
     HY -->|CreativeBrief| RC
     RC <-->|"recall / remember"| TE
     PP -.->|"/pp:run"| RC
     AS -.->|"inspect / quarantine"| RC
+    HY --> MB
+    HY --> SEN
+    HY --> XEN
+    HY --> ES
+    AM -.->|"enroll · route · observe"| HY
+    AM -.->|mesh-manifest| RC
+    TE --> AS --> HY
 
     style ES fill:#a29bfe,color:#fff
     style HY fill:#6c5ce7,color:#fff
@@ -264,6 +286,10 @@ flowchart LR
     style TE fill:#00b894,color:#fff
     style PP fill:#fdcb6e,color:#2d3436
     style AS fill:#e17055,color:#fff
+    style MB fill:#fab1a0,color:#2d3436
+    style SEN fill:#74b9ff,color:#fff
+    style XEN fill:#55efc4,color:#2d3436
+    style AM fill:#2d3436,color:#fff
 ```
 
 ### [Hydra](https://github.com/lebobo88/Hydra) — Orchestrator
@@ -284,7 +310,25 @@ The `.harness/profile.yaml` defines the `creative-media` profile. `/pp:run` and 
 
 ### [AgentSmith](https://github.com/lebobo88/AgentSmith) — Governance
 
-AgentSmith can inspect agent definitions, quarantine rogue artifacts, and enforce constitutional invariants across the ecosystem. RLM-Creative's `AGENTS.md` is the authoritative behavioral contract that AgentSmith validates against.
+AgentSmith provides artifact inspection, the N1..N10 fail-closed invariants, and quarantine + sentinel enforcement (the Matrix warden) across the ecosystem. It can inspect agent definitions, quarantine rogue artifacts, and enforce constitutional invariants. RLM-Creative's `AGENTS.md` is the authoritative behavioral contract that AgentSmith validates against.
+
+### [MarketBliss](https://github.com/lebobo88/MarketBliss) — Sibling Marketing Platform
+
+MarketBliss is the enterprise marketing platform that backs Hydra's five `marketing-*` squads (strategy, creative, research, production, ops). It is a sibling source-pack: where RLM-Creative owns brand-led campaign *production* under the garland crew, MarketBliss owns the broader marketing operating model. Both register with Hydra and can be composed in a single `/hydra:campaign`.
+
+### [Senate](https://github.com/lebobo88/Senate) — Legal Wing (the Curia)
+
+Senate is the PhD-level legal wing, **the Curia**: 12 jurists (9 primary + 3 consilium) under the Twelve Tables, resolving conflict by the Law of Citations (majority prevails; Papinian breaks ties; dissents preserved), gatekept by the Tribune's Veto (HITL). It backs Hydra's `legal-compliance` squad and is **active** — campaign deliverables with regulatory, IP, or claims-substantiation exposure can be routed through Senate review before publish.
+
+### [Xenia](https://github.com/lebobo88/Xenia-Support) — Customer Support (the Hearth)
+
+Xenia is the customer-support **Hearth**: an 11-agent support crew for ticket triage, recommendation, voice-of-customer, and approval-gated execution with WS-AUTH capability enforcement. It backs Hydra's `customer-support` squad and is **active**. Campaign assets and messaging produced by RLM-Creative inform — and are informed by — the VoC signal Xenia surfaces.
+
+### [AgentMesh](https://github.com/lebobo88/AgentMesh) — Binding Control Plane
+
+AgentMesh is the thin, governed **control plane** that binds the nine sibling systems together. It unifies them behind ONE registry (SQLite at `~/.agentmesh/state.db`; the sole writer of `~/.hydra/backends.json`), ONE lifecycle supervisor (Win32 Job Objects + crash-loop breaker + health probes), ONE observability plane (OTEL + structured logs), ONE federated read-only audit timeline (stitched from TheEights / AgentSmith / Hydra chains), ONE external protocol edge (A2A v0.3/v1.0, REST, MCP-over-HTTP), and ONE operator web console.
+
+RLM-Creative **enrolls** into the mesh via the root [`mesh-manifest.yaml`](mesh-manifest.yaml) (`apiVersion: agentmesh/v1`, `kind: SiblingManifest`, `id: rlm-creative`), validated against AgentMesh's `mesh-manifest.schema.json` — enrollment is fail-closed: JSON-Schema validation + constitution attestation (via TheEights) + AgentSmith structural inspection must all pass. The manifest declares the `rlm.*` MCP tool surface, the `rlm.ping` health probe, and `hydra` as a startup dependency. AgentMesh **enforces no governance of its own**; authority remains with TheEights → AgentSmith → Hydra. It routes and observes; it does not arbitrate.
 
 ---
 
@@ -373,8 +417,12 @@ Strict access control enforced by the `pre-asset-write` hook:
 
 | Project | Description |
 |---|---|
-| [Hydra](https://github.com/lebobo88/Hydra) | Multi-squad AI orchestrator — routes goals to specialized squads |
-| [ExecutiveSuite](https://github.com/lebobo88/ExecutiveSuite) | C-suite executive agents (CEO, CFO, CMO, CTO, etc.) |
-| [TheEights](https://github.com/lebobo88/TheEights) | Shared memory, evolution, and governance service |
-| [AgentSmith](https://github.com/lebobo88/AgentSmith) | Cross-project agent governance, inspection, and quarantine |
-| [pair-programmer](https://github.com/lebobo88/pair-programmer) | AI-assisted code quality harness with rubric-based judging |
+| [TheEights](https://github.com/lebobo88/TheEights) | Shared memory, audit, identity, governance, and self-evolution substrate — the root of trust |
+| [AgentSmith](https://github.com/lebobo88/AgentSmith) | Artifact inspection, the N1..N10 fail-closed invariants, quarantine + sentinel (the Matrix warden) |
+| [Hydra](https://github.com/lebobo88/Hydra) | LangGraph multi-squad supervisor — routes, governs, synthesizes; hosts the squads |
+| [pair-programmer](https://github.com/lebobo88/pair-programmer) | Best-of-N engineering harness — Hydra's `engineering` squad |
+| [ExecutiveSuite](https://github.com/lebobo88/ExecutiveSuite) | C-suite executive decision support — the `executive` squad |
+| [MarketBliss](https://github.com/lebobo88/MarketBliss) | Enterprise marketing platform — the five `marketing-*` squads |
+| [Senate](https://github.com/lebobo88/Senate) | PhD-level legal wing (the Curia) — the `legal-compliance` squad |
+| [Xenia](https://github.com/lebobo88/Xenia-Support) | Customer-support Hearth (11 agents) — the `customer-support` squad |
+| [AgentMesh](https://github.com/lebobo88/AgentMesh) | Thin governed control plane binding the nine siblings — registry, lifecycle, audit edge |
