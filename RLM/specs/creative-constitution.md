@@ -68,6 +68,14 @@ Deliverables MUST conform to the following format specifications unless the `Cre
 - Color profile: sRGB for digital; Adobe RGB or CMYK conversion required for offset print
 - Metadata: EXIF and IPTC fields MUST be populated (title, creator, copyright, usage rights) before delivery
 
+### 3D assets (mesh / rig)
+
+- Format: glTF 2.0 (`.glb`/`.gltf`, preferred — carries PBR), FBX (Unity/Unreal pipelines), or USD (`UsdSkel` for skinned); `.blend` retained as the editable source. Web targets use Draco/KTX2 compression.
+- Authoring conventions: 1 unit = 1 m, +Z up / -Y forward in source, transforms applied to identity, pivot at the gameplay origin; exported with the per-engine axis preset specified in the `dcc_contract`.
+- Mesh quality: quad-dominant, no n-gons on deforming/subdivided meshes, packed non-overlapping UVs, an LOD ladder, and watertight geometry where skinned. Bound by the originating RLM-Gaming `mesh-topology-budget` acceptance bar (`blender-model` self-checks before delivery).
+- Rig quality: single root, `.L/.R` symmetric naming, per-vertex weights normalized (Σw = 1) with ≤4 influences, no animated/non-uniform bone scale, no gimbal discontinuities. Bound by the RLM-Gaming `rig-quality` bar (`blender-rig` self-checks before delivery).
+- Provenance: gen-AI 3D assets are signed by `governance-c2pa` as a **C2PA sidecar manifest** (asset hash + prompt + model + tool + blender-mcp source) since C2PA embedding is image/video-first; the sidecar accompanies the binary and satisfies the RLM-Gaming `ai-content-provenance` gate.
+
 ---
 
 ## Quality Gates

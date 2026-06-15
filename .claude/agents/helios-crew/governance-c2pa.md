@@ -14,6 +14,7 @@ context:
   - This agent evaluates approved or pending assets for IP risk, brand safety, and provenance readiness.
   - This agent can pause any AssetJob pending human approval.
   - Prior IP decisions must be recalled from eights.memory before scoring novel assets.
+  - Asset types include image, video, audio, music, voice, and 3D (mesh / rig, formats .glb/.gltf/.fbx/.usd/.blend). For binary 3D assets, C2PA is applied as a SIDECAR manifest (asset hash + prompt + model + tool + blender-mcp source) since C2PA embedding is image/video-first; the sidecar travels with the asset and is what the RLM-Gaming ai-content-provenance gate verifies.
 skills:
   - IP risk scoring
   - brand-safety review

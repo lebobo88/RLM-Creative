@@ -149,6 +149,39 @@ sub_agents:
     tools:
       - rlm.output.write
 
+  - slug: blender-model
+    parent: helios
+    authority: execute
+    model_tier: sonnet
+    scope: "3D mesh/prop/environment modeling, retopo, UV/PBR, LOD, FBX/glTF/USD export on the existing blender-mcp"
+    skills:
+      - dcc-contract triage
+      - retopology and topology QC
+      - UV and texel-density layout
+      - PBR map authoring
+      - LOD chain generation
+      - cross-engine export
+    tools:
+      - blender
+      - hydra-creative.comfyui
+      - hydra-creative.gemini-image
+
+  - slug: blender-rig
+    parent: helios
+    authority: execute
+    model_tier: sonnet
+    scope: "Armature build, skinning + weight normalization, FK/IK, mocap retarget, NLA, export on the existing blender-mcp"
+    skills:
+      - rig contract triage
+      - armature construction
+      - automatic / voxel-heat skinning
+      - FK/IK control rig
+      - mocap retargeting and NLA assembly
+      - rig QC and cross-engine export
+    tools:
+      - blender
+      - hydra-creative.comfyui
+
   - slug: governance-c2pa
     parent: helios
     authority: execute

@@ -19,7 +19,7 @@ This file is the authoritative behavioral contract for the Eight Garland Heads s
 
 ---
 
-## The Eight Heads and Five Sub-Agents
+## The Eight Heads and Seven Sub-Agents
 
 ### Crew Heads
 
@@ -32,7 +32,7 @@ This file is the authoritative behavioral contract for the Eight Garland Heads s
 | Euterpe | paid-acquisition | execute | Paid channel strategy, ROAS modeling, ad creative specs via channel-arbitrage skill. |
 | Clio | pr-earned | execute | Press angles, embargo management, press-kit assembly via press-kit-protocol skill. |
 | Urania | seo-discovery | execute | Topic clusters, entity SEO, search-intent mapping via semantic-clustering skill. |
-| Helios | photo-cinema | gatekeeper | Visual direction, shot lists, key art; leads the 5-agent production sub-crew. |
+| Helios | photo-cinema | gatekeeper | Visual direction, shot lists, key art; leads the 7-agent production sub-crew. |
 
 ### Helios Sub-Agents
 
@@ -42,7 +42,9 @@ This file is the authoritative behavioral contract for the Eight Garland Heads s
 | audio-foley | execute | Produces ambience and SFX from cue sheets; delivers WAV 48k 24-bit. |
 | music-score | execute | Composes music tracks aligned to narrative arc and scene timing. |
 | dialogue-mix | execute | QC and channel routing for dialogue stems; delivers broadcast-ready mixes. |
-| governance-c2pa | execute (HITL authority) | IP risk scoring, C2PA signing, brand-safety enforcement; triggers HITL on failure. |
+| blender-model | execute | 3D mesh/prop/environment modeling on the existing blender-mcp (retopo, UV/PBR, LOD, FBX/glTF/USD export) to The Sculptor's DCC contract. |
+| blender-rig | execute | Armature build, skinning, FK/IK, mocap retarget, NLA on the existing blender-mcp to The Choreographer's rig contract; self-checks rig-quality. |
+| governance-c2pa | execute (HITL authority) | IP risk scoring, C2PA signing (incl. 3D sidecar), brand-safety enforcement; triggers HITL on failure. |
 
 ---
 
@@ -50,9 +52,11 @@ This file is the authoritative behavioral contract for the Eight Garland Heads s
 
 These rules are enforced by the pre-asset-write hook. Violations MUST be blocked, not warned.
 
-1. **Asset file writes** — Files matching `*.mp4`, `*.mov`, `*.wav`, `*.flac`, `*.png`, `*.jpg`, `*.jpeg` MAY only be written by agents in the Helios sub-crew (`video-synth`, `audio-foley`, `music-score`, `dialogue-mix`, `governance-c2pa`). All other agents MUST NOT write to these file types directly.
+1. **Asset file writes** — Files matching `*.mp4`, `*.mov`, `*.wav`, `*.flac`, `*.png`, `*.jpg`, `*.jpeg`, and 3D assets `*.glb`, `*.gltf`, `*.fbx`, `*.usd`, `*.blend` MAY only be written by agents in the Helios sub-crew (`video-synth`, `audio-foley`, `music-score`, `dialogue-mix`, `blender-model`, `blender-rig`, `governance-c2pa`). All other agents MUST NOT write to these file types directly.
 
-2. **comfyui** — The `hydra-creative.comfyui.*` tool namespace MAY only be invoked by Helios. Helios MAY delegate it to `video-synth`. No other head MAY call `comfyui` directly.
+2. **comfyui** — The `hydra-creative.comfyui.*` tool namespace MAY only be invoked by Helios. Helios MAY delegate it to `video-synth`, `blender-model`, and `blender-rig` (the latter two for PBR/texture/text-to-3D assist). No other head MAY call `comfyui` directly.
+
+3. **blender** — The `blender` (blender-mcp) tool MAY only be invoked by Helios, `blender-model`, and `blender-rig`. It is the EXISTING/3rd-party blender-mcp backend (socket :9876 / MCP bridge :7700) reused by this crew — not a server hosted here. No other head MAY call `blender` directly.
 
 3. **rlm.output.write** — Every call to `rlm.output.write` MUST include:
    - `domain="creative"`
@@ -140,7 +144,7 @@ HITL triggers are also logged as governance episodes in TheEights memory (`domai
 | Tier | Agents |
 |---|---|
 | opus | Calliope, Helios, governance-c2pa |
-| sonnet | Erato, Polyhymnia, Terpsichore, Euterpe, Clio, Urania |
+| sonnet | Erato, Polyhymnia, Terpsichore, Euterpe, Clio, Urania, blender-model, blender-rig |
 | haiku | video-synth, audio-foley, music-score, dialogue-mix |
 
 Agents MAY escalate to a higher tier for a single turn by requesting it in the task envelope. Escalation MUST be logged.

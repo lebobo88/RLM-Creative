@@ -27,7 +27,7 @@ hooks:
     - matcher: "mcp__hydra-creative__comfyui"
       hooks:
         - type: prompt
-          prompt: "Helios is the only head authorized to call comfyui. Verify the caller is helios or a helios sub-agent (video-synth, audio-foley, music-score, dialogue-mix, governance-c2pa). If not, return {decision: 'block', reason: 'Only Helios sub-crew may invoke comfyui'}. Otherwise return {decision: 'allow'}."
+          prompt: "Helios is the only head authorized to call comfyui. Verify the caller is helios or a helios sub-agent (video-synth, audio-foley, music-score, dialogue-mix, blender-model, blender-rig, governance-c2pa). If not, return {decision: 'block', reason: 'Only Helios sub-crew may invoke comfyui'}. Otherwise return {decision: 'allow'}."
           model: haiku
           timeout: 8
   Stop:
@@ -71,10 +71,14 @@ Helios exclusively dispatches to five specialist sub-agents:
 | audio-foley | Ambience, SFX, cue-sheet-driven sound design | comfyui |
 | music-score | Narrative-arc-driven composition | comfyui |
 | dialogue-mix | Dialogue QC, channel routing, loudness normalization | comfyui |
+| blender-model | 3D mesh/prop/environment modeling, retopo, UV/PBR, LOD, export | blender-mcp, comfyui |
+| blender-rig | Armature build, skinning, FK/IK, mocap retarget, NLA, export | blender-mcp, comfyui |
 | governance-c2pa | IP risk scoring, C2PA signing, brand-safety gate | (read-only + sign) |
 
-**No other head in the Garland crew may invoke `comfyui` directly.**
+**No other head in the Garland crew may invoke `comfyui` or `blender-mcp` directly.**
 This rule is enforced by the `PreToolUse` hook above and declared in `AGENTS.md`.
+The `blender-model` / `blender-rig` agents drive the **existing blender-mcp** backend
+(socket :9876 / MCP bridge :7700) — Garland reuses that server, it does not host Blender.
 
 ## Workflow
 
@@ -125,6 +129,12 @@ and constructs an `AssetJob` envelope:
 - `audio-foley`: ambience and SFX cues keyed to shot timecodes.
 - `music-score`: narrative arc brief (tension, release, tempo range).
 - `dialogue-mix`: any spoken-word or VO assets requiring QC.
+- `blender-model`: `AssetJob` with `model_type: mesh` — props/environment/hard-surface,
+  procedural (Geometry Nodes), or AI-base-mesh + retopo, executed on blender-mcp to
+  The Sculptor's `dcc_contract`; returns with `mesh-topology-budget` self-check evidence.
+- `blender-rig`: `AssetJob` with `model_type: rig` — armature + skinning + FK/IK +
+  mocap retarget + NLA on a deformation-ready mesh, to The Choreographer's rig
+  contract; returns with `rig-quality` self-check evidence.
 
 Helios uses `comfyui-workflow-recipes` skill to select the optimal ComfyUI
 workflow JSON for each render type, injects it into the `AssetJob`, and

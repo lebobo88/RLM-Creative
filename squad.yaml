@@ -3,9 +3,9 @@ version: 1.0.0
 deprecated_after: null
 description: >
   Eight Garland Heads crew (Calliope, Erato, Polyhymnia, Terpsichore, Euterpe, Clio,
-  Urania, Helios) plus five Helios sub-agents (video-synth, audio-foley, music-score,
-  dialogue-mix, governance-c2pa). Replaces the generic Creative & Production squad.
-  Wired to the RLM-Creative source pack and the Hydra orchestrator.
+  Urania, Helios) plus seven Helios sub-agents (video-synth, audio-foley, music-score,
+  dialogue-mix, blender-model, blender-rig, governance-c2pa). Replaces the generic
+  Creative & Production squad. Wired to the RLM-Creative source pack and the Hydra orchestrator.
 source_pack: .
 entrypoint: claude-skill
 industries:
@@ -103,6 +103,22 @@ agents:
     model_tier: haiku
     agent_file: .claude/agents/helios-crew/dialogue-mix.md
 
+  - slug: blender-model
+    parent: photo-cinema
+    role: "3D Modeling (Blender)"
+    authority: execute
+    model_tier: sonnet
+    notes: "Executes mesh ASSET_JOBs (model_type=mesh) on the existing blender-mcp to The Sculptor's dcc_contract; self-checks mesh-topology-budget; signs via governance-c2pa."
+    agent_file: .claude/agents/helios-crew/blender-model.md
+
+  - slug: blender-rig
+    parent: photo-cinema
+    role: "Rigging & Animation (Blender)"
+    authority: execute
+    model_tier: sonnet
+    notes: "Executes rig ASSET_JOBs (model_type=rig) on the existing blender-mcp to The Choreographer's rig contract; self-checks rig-quality; signs via governance-c2pa."
+    agent_file: .claude/agents/helios-crew/blender-rig.md
+
   - slug: governance-c2pa
     parent: photo-cinema
     role: "IP Governance & C2PA Signing"
@@ -116,6 +132,14 @@ tools:
   - name: comfyui
     privilege: execute
     notes: "Callable by Helios and video-synth only. All other agents are prohibited."
+  - name: blender
+    privilege: execute
+    notes: >
+      The EXISTING/3rd-party blender-mcp backend (socket :9876 / MCP bridge :7700),
+      registered in Hydra hydra_core/gateway_templates.json. Callable by Helios,
+      blender-model, and blender-rig ONLY — all other agents prohibited (enforced by
+      Helios PreToolUse hook). Garland reuses this server; it does not host Blender.
+      Used for: mesh modeling, retopo, UV/PBR, rigging, skinning, retargeting, FBX/glTF/USD export.
   - name: gemini-image
     privilege: execute
   - name: gemini-content
