@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -File .claude/hooks/pre-asset-write.ps1",
+            "command": "powershell -File plugins/rlm-creative/hooks/pre-asset-write.ps1",
             "timeout": 10
           }
         ]
@@ -29,7 +29,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -File .claude/hooks/post-render-validate.ps1",
+            "command": "powershell -File plugins/rlm-creative/hooks/post-render-validate.ps1",
             "timeout": 15
           }
         ]

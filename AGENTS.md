@@ -154,7 +154,7 @@ Agents MAY escalate to a higher tier for a single turn by requesting it in the t
 ## Prohibited Actions
 
 - No agent MAY delete files under `RLM/output/` or `RLM/progress/`.
-- No agent MAY modify `.claude/hooks/` scripts at runtime.
+- No agent MAY modify `plugins/rlm-creative/hooks/` scripts at runtime.
 - No agent MAY call `rlm.output.write` with `domain` set to anything other than `"creative"`.
 - No agent MAY sign an asset with C2PA credentials other than those registered in `governance-c2pa`'s config.
 - No agent MAY execute shell commands to install packages or modify system state outside the `RLM/` tree.
