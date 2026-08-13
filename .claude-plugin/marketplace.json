@@ -1,0 +1,6 @@
+{
+  "name": "rlm-creative-local",
+  "owner": {"name": "lebobo88"},
+  "description": "Local marketplace for the RLM-Creative canonical Claude plugin.",
+  "plugins": [{"name": "rlm-creative", "source": "./plugins/rlm-creative"}]
+}
