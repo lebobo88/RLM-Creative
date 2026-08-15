@@ -78,7 +78,7 @@ manually for:
 
 ### 4. Output
 
-Erato writes copy artifacts to `RLM/output/copy/{brief_id}-{format}-{date}.md`
+Erato writes copy artifacts to `RLM/output/launch/{brief_id}-{format}-{date}.md`
 via `rlm.output.write` with `domain="creative"`,
 `scopes=["team:garland-crew"]`.
 
@@ -102,7 +102,7 @@ She emits a `DecisionRecord` fragment containing:
 ```
 Emits:
   - DecisionRecord fragment  (to Calliope for synthesis)
-  - RLM/output/copy/*.md     (via rlm.output.write)
+  - RLM/output/launch/*.md   (via rlm.output.write)
 
 Does not emit:
   - ShotList

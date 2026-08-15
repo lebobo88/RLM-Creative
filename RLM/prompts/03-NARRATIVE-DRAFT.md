@@ -9,7 +9,7 @@ Translate the published `CreativeBrief` into a campaign narrative architecture: 
 - **Mode**: AUTOMATED with two checkpoints
 
 ## Inputs
-- `RLM/output/briefs/{brief_id}.json` (the CreativeBrief)
+- `RLM/output/brief/{brief_id}-{date}.md` (the CreativeBrief record)
 - `eights.memory.recall(domain="creative", query=brief.objective + brief.industry, scopes=["public","team:garland-crew","assetlib:approved"], k=10)` — pull prior winning narratives
 - Skill: `platform-voice` (Erato), `creative-brief-protocol` (Calliope)
 
@@ -57,7 +57,7 @@ Before emitting, Calliope checks:
 - Tone adjectives appear demonstrably in at least 2 voice pillars.
 
 ## Output
-Write `RLM/output/narrative/{brief_id}-narrative.md` containing:
+Write `RLM/output/brief/{brief_id}-narrative-{date}.md` containing:
 - Central idea (one sentence + 2 runner-up candidates)
 - Story spine (7 beats)
 - Voice pillars (4 pillars with exemplars)

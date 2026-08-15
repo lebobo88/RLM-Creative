@@ -95,7 +95,7 @@ Terpsichore defines the engagement cadence:
 
 ### 5. Output
 
-Writes to `RLM/output/social/{brief_id}-social-plan-{date}.md` via
+Writes to `RLM/output/launch/{brief_id}-social-plan-{date}.md` via
 `rlm.output.write` with `domain="creative"`, `scopes=["team:garland-crew"]`.
 
 Emits a `DecisionRecord` fragment with:
@@ -109,7 +109,7 @@ Emits a `DecisionRecord` fragment with:
 ```
 Emits:
   - DecisionRecord fragment           (to Calliope for synthesis)
-  - RLM/output/social/*-social-plan-*.md
+  - RLM/output/launch/*-social-plan-*.md
 
 Draft gemini-image thumbnails are tagged DRAFT and NOT production assets.
 All production visual assets are delegated through Calliope to Helios.

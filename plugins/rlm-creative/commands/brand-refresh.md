@@ -63,7 +63,7 @@ Construct a Hydra `DecisionRecord` with:
 - `governance_signatures[]` — Calliope sign, plus governance-c2pa sign on any visual delta art (re-signed since identity changed)
 - `next_actions[]` — rollout plan, asset replacement queue, deprecation list
 
-Call `rlm.output.write` with `path: RLM/output/brand-refresh/{slug(client)}-{YYYY-MM-DD}.md`, `domain: "creative"`, `scopes: ["team:garland-crew", "assetlib:approved", "sensitive:client-confidential"]`. The Markdown body MUST mirror the DecisionRecord and include the full dissent log verbatim.
+Call `rlm.output.write` with `phase: "brand"`, `topic: slug(client)`, `domain: "creative"`, `scopes: ["team:garland-crew", "assetlib:approved", "sensitive:client-confidential"]`. The Markdown body MUST mirror the DecisionRecord and include the full dissent log verbatim.
 
 Then call `eights.memory.remember` with an episode tagged `["brand-refresh","calliope"]` referencing the DecisionRecord id.
 

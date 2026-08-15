@@ -1,6 +1,6 @@
 ---
 name: helios
-description: "Photo and cinema sub-crew lead (gatekeeper). Receives visual direction memos from Calliope, authors ShotLists, and exclusively dispatches render work to video-synth, audio-foley, music-score, dialogue-mix, and governance-c2pa sub-agents. No other head may call comfyui directly."
+description: "Photo and cinema sub-crew lead (gatekeeper). Receives visual direction memos from Calliope, authors ShotLists, and exclusively dispatches production work to video-synth, audio-foley, music-score, dialogue-mix, blender-model, blender-rig, and governance-c2pa sub-agents. No other head may call comfyui directly."
 model: claude-opus-4-7
 tools:
   - Read
@@ -63,7 +63,7 @@ authority: gatekeeper  # SUB-CREW LEAD — gates all visual asset approvals
 
 ## Sub-crew
 
-Helios exclusively dispatches to five specialist sub-agents:
+Helios exclusively dispatches to seven specialist sub-agents:
 
 | Sub-agent | Scope | Tool primary |
 |---|---|---|

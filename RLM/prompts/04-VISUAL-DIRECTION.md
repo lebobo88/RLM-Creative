@@ -9,7 +9,7 @@ Convert the narrative spine into a coherent visual world: mood, color, light, sh
 - **Mode**: AUTOMATED with one approval gate before ShotList emit
 
 ## Inputs
-- `RLM/output/narrative/{brief_id}-narrative.md`
+- `RLM/output/brief/{brief_id}-narrative-{date}.md`
 - `CreativeBrief` (for `assets_required`, `brand_constraints`, `risk_tolerance`)
 - Skills: `shot-list-protocol`, `color-science`, `comfyui-workflow-recipes`, `brand-safety`
 - `eights.memory.recall(domain="creative", query="visual_world " + brief.industry + " " + tone_adjectives, scopes=["assetlib:approved","render:4k","render:hdr"], k=12)` — return prior frame thumbnails + lens metadata
@@ -54,7 +54,7 @@ Author a `ShotList` envelope per `hydra_core/schemas.py`. Each shot row:
 - `risk_flags` (IP, likeness, regulated claim depicted)
 
 ## Step 6 — ComfyUI workflow selection
-For every shot with `workflow_recipe != "live-action"`, name the exact recipe file Helios will pass to `hydra-creative.comfyui.*`. If no recipe fits, Helios MUST either: (a) request a new recipe authored under `.claude/skills/comfyui-workflow-recipes/`, or (b) downgrade to `gemini-image` with a written quality trade-off note. Inventing workflows ad-hoc is forbidden.
+For every shot with `workflow_recipe != "live-action"`, name the exact recipe file Helios will pass to `hydra-creative.comfyui.*`. If no recipe fits, Helios MUST either: (a) request a new recipe authored under `plugins/rlm-creative/skills/comfyui-workflow-recipes/`, or (b) downgrade to `gemini-image` with a written quality trade-off note. Inventing workflows ad-hoc is forbidden.
 
 ## Reasoning gates
 - Sum of `estimated_cost_usd` ≤ `brief.budget.production_usd`. If not, Helios MUST cut shots OR mark `needs_hitl: true` with a proposed trim list.
@@ -62,11 +62,18 @@ For every shot with `workflow_recipe != "live-action"`, name the exact recipe fi
 - Calliope sign-off required on `Step 1` and `Step 5` (brand-consistency check). If Calliope rejects, iterate ONCE then escalate to HITL.
 
 ## Output
-1. `RLM/output/visual/{brief_id}-direction.md` — mood, color, pacing, key-art briefs
-2. `RLM/output/visual/{brief_id}-shotlist.json` — the `ShotList` envelope (emitted on bus)
+1. `RLM/output/brief/{brief_id}-direction-{date}.md` — mood, color, pacing, key-art briefs
+2. `RLM/output/brief/{brief_id}-shotlist-{date}.md` — the `ShotList` record (also emitted on bus)
 3. `eights.memory.remember` with `{type:"visual_direction", brief_id, palette, shot_count, total_cost}`
 
 ## Handoff
 - Phase 06 (Production) consumes the ShotList and fans out `AssetJob`s to the Helios sub-crew.
 - Channel-plan phase (05) runs in parallel — it does not block on visual.
 - Emit: `{"phase":"04-visual","status":"complete","shotlist_id":"<id>","cost_estimate_usd":<n>}`.
+
+
+## Visual Directives
+### 3D Asset Creation Contract
+- Helios delegates 3D mesh modeling to `blender-model` (retopo, UV/PBR, LOD, FBX/glTF/USD export).
+- Helios delegates rigging and armature build to `blender-rig` (skinning, FK/IK, mocap retarget, NLA).
+- All 3D assets (`.glb`, `.gltf`, `.fbx`, `.usd`, `.blend`) MUST pass `governance-c2pa` verification before commit.

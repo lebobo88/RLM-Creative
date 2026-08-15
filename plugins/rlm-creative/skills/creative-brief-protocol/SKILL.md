@@ -47,7 +47,7 @@ Optional but recommended: `budget_usd`, `deadline_iso`, `risk_tolerance` (`low`|
 ## Outputs
 
 - A `CreativeBrief` JSON object MUST be emitted before any fan-out occurs.
-- A `gaps.md` note SHOULD be written to `RLM/output/intake/{campaign_id}-{date}.md` when fields were inferred rather than supplied.
+- A `gaps.md` note SHOULD be written to `RLM/output/brief/{campaign_id}-{date}.md` when fields were inferred rather than supplied.
 
 ## Intake template (Calliope asks the requestor)
 

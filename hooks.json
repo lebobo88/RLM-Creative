@@ -13,7 +13,7 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Write.*\\.(mp4|mov|wav|flac|png|jpg|jpeg)$",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
@@ -25,7 +25,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Bash.*ffmpeg|ffprobe",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",

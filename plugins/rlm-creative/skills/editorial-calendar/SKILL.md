@@ -31,7 +31,7 @@ Maximize compounding return on creative work by producing fewer, denser pillar p
 
 ## Outputs
 
-- `editorial_calendar.json` written to `RLM/output/content/{campaign_id}-calendar-{date}.json` with structure `{quarter_arc, pillars[], clusters[], atoms[], cadence}`
+- `editorial_calendar` record written to `RLM/output/launch/{campaign_id}-calendar-{date}.md` with structure `{quarter_arc, pillars[], clusters[], atoms[], cadence}`
 - A weekly cadence schedule per channel
 - Per-pillar `AssetJob` envelopes for the long-form deliverable
 

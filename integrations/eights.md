@@ -152,7 +152,7 @@ Helios performs a separate recall scoped to `["assetlib:approved", "render:4k"]`
 Event line schema:
 
 ```json
-{"ts":"2026-05-19T14:23:01.042Z","agent":"video-synth","tool":"Bash","output_path":"RLM/output/production/hero-2026-05-19.mp4","duration_ms":87400,"exit_code":0}
+{"ts":"2026-05-19T14:23:01.042Z","agent":"video-synth","tool":"Bash","output_path":"RLM/output/photo/assets/hero-2026-05-19.mp4","duration_ms":87400,"exit_code":0}
 ```
 
 rlm-bridge dedup key: `agent` + `output_path` + `ts`.

@@ -45,7 +45,7 @@ Surface enough strategic context from the requester to construct a valid `Creati
 - If `risk_tolerance == "low"` OR talent likeness involved, append a note that `governance-c2pa` will gate every asset.
 
 ## Output
-Write `RLM/output/discovery/{topic}-{date}.md` via `rlm.output.write` with `domain="creative"`, `scopes=["team:garland-crew"]`. The file MUST contain:
+Write `RLM/output/brief/{topic}-{date}.md` via `rlm.output.write` with `domain="creative"`, `scopes=["team:garland-crew"]`. The file MUST contain:
 - Requester, date, campaign codename
 - All Q&A verbatim (no paraphrasing of user words)
 - Calliope's annotations: open issues, assumption log with confidence, recall hits from `eights.memory.recall`

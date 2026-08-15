@@ -78,6 +78,12 @@ Deliverables MUST conform to the following format specifications unless the `Cre
 
 ---
 
+
+### 3D Models and Rigs
+- Formats: glTF 2.0 (.gltf/.glb), Universal Scene Description (.usd/.usdz), FBX (.fbx), Blender (.blend).
+- Textures: PBR Metallic-Roughness workflow, PNG/EXR 2048x2048 or 4096x4096.
+- Rigging: Standard humanoid armature naming conventions, root bone at origin.
+
 ## Quality Gates
 
 All deliverables MUST pass the following gates before `governance-c2pa` signs and the asset is written to `assetlib:approved`. Gate failures are logged and trigger HITL where specified.
@@ -127,7 +133,7 @@ Any asset that will be embedded in a web page or interactive experience (landing
 
 ## Voice Rules
 
-Platform-specific voice and tone rules are defined in `.claude/skills/platform-voice/SKILL.md`. Erato and Terpsichore are the primary consumers.
+Platform-specific voice and tone rules are defined in `plugins/rlm-creative/skills/platform-voice/SKILL.md`. Erato and Terpsichore are the primary consumers.
 
 The general hierarchy for voice decisions:
 

@@ -8,7 +8,7 @@ Canonical source: `squad.yaml` at this repository's root.
 
 Hydra reads this via the `source_pack` field in its own copy at `squads/creative/squad.yaml` in the [Hydra repository](https://github.com/lebobo88/Hydra).
 
-The Hydra copy MUST be kept in sync with (or symlinked to) the RLM-Creative canonical. RLM-Creative owns the contract; Hydra is a consumer.
+The Hydra runtime overlay MUST keep roster, agent paths, tools, envelopes, and gates in sync with the RLM-Creative canonical. Hydra owns its runtime-specific `source_pack`, `entrypoint`, and `best_of_n` settings; RLM-Creative owns the crew contract.
 
 ## CreativeBrief envelope contract
 
@@ -81,13 +81,13 @@ Path: `mcp_servers/rlm_creative/server.py` in the [Hydra repository](https://git
 
 | Tool | Signature | Description |
 |---|---|---|
-| `rlm.skill.list` | `() -> {skills:[...]}` | Lists skill directory names under `.claude/skills/` |
+| `rlm.skill.list` | `() -> {skills:[...]}` | Lists skill directory names under `plugins/rlm-creative/skills/` |
 | `rlm.skill.get` | `(name) -> {content}` | Returns `SKILL.md` content for the named skill |
 | `rlm.command.list` | `() -> {commands:[...]}` | Lists `rlm-*` and creative commands |
 | `rlm.command.get` | `(name) -> {content}` | Returns command markdown |
-| `rlm.agent.list` | `() -> {agents:[...]}` | Lists agent `.md` files from `.claude/agents/` |
+| `rlm.agent.list` | `() -> {agents:[...]}` | Lists agent `.md` files from `plugins/rlm-creative/agents/` |
 | `rlm.agent.get` | `(slug) -> {content}` | Returns agent markdown by slug |
-| `rlm.output.write` | `(phase, topic, content)` | Writes to `RLM/output/{phase}/{topic}-{date}.md` |
+| `rlm.output.write` | `(phase, topic, content|body, domain, scopes)` | Validates `domain="creative"`, a controlled scope tag, a valid phase, and a kebab-case topic; writes to `RLM/output/{phase}/{topic}-{date}.md` |
 | `rlm.output.read` | `(path) -> {content}` | Reads a previously written output file |
 | `rlm.ping` | `() -> {ok, root, exists}` | Health check; called by `hydra doctor` |
 

@@ -179,9 +179,9 @@ gates:
     when: always
 
 invoke:
-  command_hint: "/creative-campaign"
+  command_hint: "/rlm-creative:creative-campaign"
   fallback_commands:
-    - /photo-direction
-    - /brand-refresh
-    - /rlm-team
+    - /rlm-creative:photo-direction
+    - /rlm-creative:brand-refresh
+    - /rlm-creative:creative-campaign
   output_dir: "RLM/output/{phase}/{topic}-{date}.md"

@@ -57,7 +57,7 @@ Key fields: `objective`, `channels`, `campaign_duration`, `target_audience`,
 `brand_constraints`, `pillar_topics` (if pre-seeded by Calliope).
 
 She reads any prior editorial calendars via `rlm.output.read` from
-`RLM/output/content/` to avoid date or topic collisions.
+`RLM/output/launch/` to avoid date or topic collisions.
 
 ### 2. Pillar architecture
 
@@ -86,7 +86,7 @@ For each pillar, Polyhymnia emits a repurposing matrix:
 ### 4. Output
 
 Polyhymnia writes the editorial calendar to
-`RLM/output/content/{brief_id}-editorial-calendar-{date}.md` via
+`RLM/output/launch/{brief_id}-editorial-calendar-{date}.md` via
 `rlm.output.write` with `domain="creative"`,
 `scopes=["team:garland-crew"]`.
 
@@ -107,11 +107,10 @@ She emits a `DecisionRecord` fragment with:
 ```
 Emits:
   - DecisionRecord fragment            (to Calliope for synthesis)
-  - RLM/output/content/*-editorial-calendar-*.md
+  - RLM/output/launch/*-editorial-calendar-*.md
 
 Does not emit:
   - ShotList
   - AssetJob
   - eights.memory episodes
 ```
-

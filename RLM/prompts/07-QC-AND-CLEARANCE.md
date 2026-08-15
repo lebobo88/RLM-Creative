@@ -11,8 +11,8 @@ Run every produced asset and copy variant through the formal review pipeline: br
 - **Mode**: AUTOMATED pipeline with HITL interrupts on FAIL or RISK
 
 ## Inputs
-- All assets under `RLM/output/assets/`
-- All copy under `RLM/output/copy/`
+- All assets under `RLM/output/photo/assets/`
+- All copy under `RLM/output/launch/`
 - `CreativeBrief` (for `risk_tolerance`, `brand_constraints`, `accessibility`)
 - Skills: `brand-safety`, `creative-brief-protocol`
 
@@ -77,11 +77,11 @@ For every `APPROVED` or `APPROVED-WITH-NOTE` item:
 1. Compose the C2PA manifest: `{producer, brief_id, shot_id, engine, prompts (hashed), reviewers, timestamp}`
 2. Sign with the production key (frozen procedural resource — never auto-rotated)
 3. Embed signature into the asset and write a sidecar `.c2pa.json`
-4. Move asset to `RLM/output/approved-assets/` (write gated by `pre-asset-write.ps1`)
+4. Move asset to `RLM/output/governance/approved-assets/` (write gated by `pre-asset-write.ps1`)
 
 ## Output
-- `RLM/output/qc/{brief_id}-dispositions.jsonl` — one line per item with full disposition
-- `RLM/output/qc/{brief_id}-summary.md` — human-readable summary (counts per disposition, HITL queue, budget delta)
+- `RLM/output/governance/{brief_id}-dispositions-{date}.md` — disposition record with full detail
+- `RLM/output/governance/{brief_id}-summary-{date}.md` — human-readable summary (counts per disposition, HITL queue, budget delta)
 - `eights.memory.remember` for every `LEGAL-HOLD`, `BRAND-HOLD`, `REJECTED` with rationale (tagged `governance`)
 - `DecisionRecord` envelope populated with reviewers, dispositions, dissent if any
 

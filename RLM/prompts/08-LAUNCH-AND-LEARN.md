@@ -11,9 +11,9 @@ Sequence the launch, wire telemetry to the success metrics defined in the `Creat
 - **Mode**: SUPERVISED launch (human GO/NO-GO), AUTOMATED retrospective synthesis
 
 ## Inputs
-- `RLM/output/approved-assets/` (only `APPROVED` / `APPROVED-WITH-NOTE` items)
-- `RLM/output/qc/{brief_id}-dispositions.jsonl`
-- `RLM/output/channel-plan/{brief_id}-deliverables.json`
+- `RLM/output/governance/approved-assets/` (only `APPROVED` / `APPROVED-WITH-NOTE` items)
+- `RLM/output/governance/{brief_id}-dispositions-{date}.md`
+- `RLM/output/launch/{brief_id}-deliverables-{date}.md`
 - `CreativeBrief.success_metrics`
 - `CreativeBrief.deadline` and any tentpole timing constraints
 
@@ -86,12 +86,11 @@ Author the `DecisionRecord` envelope per `hydra_core/schemas.py`:
 - `dissenting_opinions` (from 4c)
 - `propagation_actions` (skill/playbook updates queued for TheEights RSPL evolution)
 
-Emit on bus and persist at `RLM/output/decisions/{brief_id}-retro.json`.
+Emit on bus and persist at `RLM/output/launch/{brief_id}-retro-{date}.md`.
 
 ## Output (the final artifacts)
 - `RLM/output/launch/{brief_id}-runbook.md` — launch sequence + tracking contract
-- `RLM/output/retrospective/{brief_id}-retro.md` — human-readable retrospective
-- `RLM/output/decisions/{brief_id}-retro.json` — the `DecisionRecord` envelope
+- `RLM/output/launch/{brief_id}-retro-{date}.md` — human-readable retrospective and `DecisionRecord` record
 - TheEights episode persisted via `eights.memory.remember`
 - Skill/playbook update PRs queued for low/medium risk-class auto-evolution
 

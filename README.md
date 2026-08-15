@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status: Active" />
-  <img src="https://img.shields.io/badge/agents-13-blue" alt="13 Agents" />
+  <img src="https://img.shields.io/badge/agents-15-blue" alt="15 Agents" />
   <img src="https://img.shields.io/badge/skills-11-blue" alt="11 Skills" />
   <img src="https://img.shields.io/badge/commands-3-blue" alt="3 Commands" />
   <img src="https://img.shields.io/badge/license-proprietary-lightgrey" alt="License" />
@@ -8,7 +8,7 @@
 
 # RLM-Creative — Eight Garland Heads
 
-> A multi-agent creative production studio that turns strategic briefs into fully governed campaign deliverables — copy, content calendars, social plans, paid media specs, PR kits, SEO clusters, video, audio, and signed key art — using 13 specialized AI agents orchestrated through typed envelopes.
+> A multi-agent creative production studio that turns strategic briefs into fully governed campaign deliverables — copy, content calendars, social plans, paid media specs, PR kits, SEO clusters, video, audio, 3D, and signed key art — using 15 specialized AI agents orchestrated through typed envelopes.
 
 ---
 
@@ -16,11 +16,11 @@
 
 RLM-Creative is a **CrewAI-style multi-agent studio** built for end-to-end creative production. It takes a strategic brief (a product launch, a brand refresh, a visual direction request) and fans it out across eight specialized agents — named after the classical Muses plus Helios — who work in parallel to produce campaign-ready deliverables.
 
-A five-agent sub-crew under Helios handles the production pipeline: video synthesis, foley/SFX, music scoring, dialogue mixing, and IP governance with [C2PA](https://c2pa.org/) provenance signing.
+A seven-agent sub-crew under Helios handles video synthesis, foley/SFX, music scoring, dialogue mixing, 3D modeling, rigging, and IP governance with [C2PA](https://c2pa.org/) provenance signing.
 
 **Two ways to run it:**
 
-- **Standalone in Claude Code** — Open this repo as your working directory. The three slash commands (`/creative-campaign`, `/photo-direction`, `/brand-refresh`) drive the full crew directly.
+- **Standalone in Claude Code** — Load the bundled `rlm-creative` plugin, then invoke its namespaced commands (`/rlm-creative:creative-campaign`, `/rlm-creative:photo-direction`, `/rlm-creative:brand-refresh`).
 - **Orchestrated via [Hydra](https://github.com/lebobo88/Hydra)** — RLM-Creative registers as Hydra's `creative` squad. Strategic decisions from the [ExecutiveSuite](https://github.com/lebobo88/ExecutiveSuite) CMO flow through Hydra as `CreativeBrief` envelopes, and Hydra manages HITL gates, budget enforcement, and cross-squad routing.
 
 ---
@@ -48,6 +48,8 @@ flowchart TD
     HEL --> AF["audio-foley"]
     HEL --> MS["music-score"]
     HEL --> DM["dialogue-mix"]
+    HEL --> BM["blender-model"]
+    HEL --> BR["blender-rig"]
     HEL --> GOV["governance-c2pa<br/><i>HITL authority</i>"]
 
     style CMO fill:#6c5ce7,color:#fff,stroke:#5a4bd1
@@ -65,6 +67,8 @@ flowchart TD
     style AF fill:#636e72,color:#fff,stroke:#4a5459
     style MS fill:#636e72,color:#fff,stroke:#4a5459
     style DM fill:#636e72,color:#fff,stroke:#4a5459
+    style BM fill:#636e72,color:#fff,stroke:#4a5459
+    style BR fill:#636e72,color:#fff,stroke:#4a5459
 ```
 
 <p align="center"><sub>
@@ -92,7 +96,7 @@ Each head follows the **CrewAI pattern**: role, goal, backstory, and tool list. 
 | **Urania** | `seo-discovery` | Execute | Semantic topic clusters, entity SEO, search-intent mapping |
 | **Helios** | `photo-cinema` | Gatekeeper (sub-crew lead) | Visual direction, shot lists, key art, video synthesis, C2PA governance |
 
-### Helios Sub-Crew (5 Production Specialists)
+### Helios Sub-Crew (7 Production Specialists)
 
 | Slug | Scope |
 |---|---|
@@ -100,6 +104,8 @@ Each head follows the **CrewAI pattern**: role, goal, backstory, and tool list. 
 | `audio-foley` | Ambience, SFX, cue-sheet-driven audio production |
 | `music-score` | Narrative-arc-driven music composition |
 | `dialogue-mix` | Dialogue QC and multi-channel routing (5.1 / stereo) |
+| `blender-model` | 3D mesh, prop, and environment modeling; retopo, UV/PBR, LOD, and export |
+| `blender-rig` | Armatures, skinning, FK/IK, mocap retargeting, NLA, and export |
 | `governance-c2pa` | IP risk scoring, C2PA signing, brand-safety enforcement (**HITL authority**) |
 
 ---
@@ -172,24 +178,30 @@ Resume with `/hydra:approve` or reject with `/hydra:reject`.
 
 ### Standalone (Claude Code)
 
-Clone the repository and open it as your Claude Code working directory. `CLAUDE.md` automatically imports `AGENTS.md`, making all behavioral rules and head definitions available.
+Clone the repository and open it as your Claude Code working directory. `CLAUDE.md` imports `AGENTS.md`, and the bundled plugin contains the reusable commands, agents, skills, and hooks.
 
 ```bash
 git clone https://github.com/lebobo88/RLM-Creative.git
 cd RLM-Creative
 ```
 
-Then use the slash commands directly:
+For local development, load the plugin directly:
+
+```bash
+claude --plugin-dir ./plugins/rlm-creative
+```
+
+Then use the namespaced commands:
 
 ```
 # Full campaign from brief to deliverables
-/creative-campaign Draft a launch campaign for Project Meridian targeting B2B SaaS buyers.
+/rlm-creative:creative-campaign Draft a launch campaign for Project Meridian targeting B2B SaaS buyers.
 
 # Photo direction only
-/photo-direction hero product shot — matte black hardware, studio lighting, minimalist
+/rlm-creative:photo-direction hero product shot — matte black hardware, studio lighting, minimalist
 
 # Brand audit and refresh
-/brand-refresh Acme Corp
+/rlm-creative:brand-refresh Acme Corp
 ```
 
 ### With Hydra Orchestration
@@ -205,7 +217,7 @@ python -m hydra_core.cli squads
 python -m hydra_core.cli run "Draft a Q3 brand campaign for Acme" --squad creative
 ```
 
-The squad manifest (`squad.yaml`) at the repo root is the canonical source. Hydra's copy at `squads/creative/squad.yaml` must be kept in sync or symlinked.
+The squad manifest (`squad.yaml`) at the repo root is the canonical crew contract. Hydra's runtime overlay at `squads/garland/squad.yaml` must keep the roster, agent paths, tools, envelopes, and gates in sync; its Hydra-specific `source_pack`, `entrypoint`, and `best_of_n` settings remain runtime-owned.
 
 ---
 
@@ -339,7 +351,7 @@ RLM-Creative/
 ├── README.md                        # This file
 ├── AGENTS.md                        # Cross-tool behavioral contract (authoritative)
 ├── CLAUDE.md                        # @AGENTS.md import shim
-├── heads.yaml                       # Canonical 8-head + 5-sub-agent registry
+├── heads.yaml                       # Canonical 8-head + 7-sub-agent registry
 ├── squad.yaml                       # Hydra squad manifest
 ├── hooks.json                       # Top-level hook registry
 ├── .harness/profile.yaml            # Pair-programmer profile: creative-media
@@ -372,7 +384,7 @@ RLM-Creative/
 
 ## Skills
 
-RLM-Creative ships with 11 reusable skill modules under `.claude/skills/`:
+RLM-Creative ships with 11 reusable skill modules under `plugins/rlm-creative/skills/`:
 
 | Skill | Used by | Purpose |
 |---|---|---|
@@ -396,9 +408,9 @@ RLM-Creative ships with 11 reusable skill modules under `.claude/skills/`:
 
 Strict access control enforced by the `pre-asset-write` hook:
 
-- **Asset files** (`*.mp4`, `*.mov`, `*.wav`, `*.flac`, `*.png`, `*.jpg`) may only be written by Helios sub-crew agents.
-- **ComfyUI** (`hydra-creative.comfyui.*`) may only be invoked by Helios (delegatable to `video-synth`).
-- **Memory writes** (`eights.memory.remember`) restricted to Calliope, Helios, and `governance-c2pa`.
+- **Asset files** (`*.mp4`, `*.mov`, `*.wav`, `*.flac`, `*.png`, `*.jpg`, `*.jpeg`, `*.glb`, `*.gltf`, `*.fbx`, `*.usd`, `*.blend`) may only be written by Helios sub-crew agents.
+- **ComfyUI** (`hydra-creative.comfyui.*`) may only be invoked by Helios or the delegated `video-synth`, `blender-model`, and `blender-rig` sub-agents.
+- **Memory writes** (`eights.memory.remember`) require `domain="creative"` and at least one controlled scope tag.
 - **All `rlm.output.write` calls** must include `domain="creative"` and at least one controlled scope tag.
 
 ---
@@ -408,7 +420,7 @@ Strict access control enforced by the `pre-asset-write` hook:
 | Tier | Agents | Rationale |
 |---|---|---|
 | **Opus** | Calliope, Helios, governance-c2pa | Gatekeepers and IP-critical decisions require highest capability |
-| **Sonnet** | Erato, Polyhymnia, Terpsichore, Euterpe, Clio, Urania | Execution heads — strong capability at efficient cost |
+| **Sonnet** | Erato, Polyhymnia, Terpsichore, Euterpe, Clio, Urania, blender-model, blender-rig | Execution heads and 3D specialists — strong capability at efficient cost |
 | **Haiku** | video-synth, audio-foley, music-score, dialogue-mix | Production sub-agents — tool-driven, lower reasoning overhead |
 
 ---

@@ -66,8 +66,8 @@ Parallel fan-out, time-boxed. Each head produces a section against the same temp
 5. De-duplication: identical asset needs across heads (e.g., a hero still wanted by Terpsichore and Euterpe) collapse to one `AssetJob` with multiple channel targets.
 
 ## Output
-- `RLM/output/channel-plan/{brief_id}-plan.md` (the consolidated artifact, one section per head)
-- `RLM/output/channel-plan/{brief_id}-deliverables.json` — the flat deliverable list (input to Phase 06)
+- `RLM/output/launch/{brief_id}-plan-{date}.md` (the consolidated artifact, one section per head)
+- `RLM/output/launch/{brief_id}-deliverables-{date}.md` — the flat deliverable record (input to Phase 06)
 - `eights.memory.remember` with `{type:"channel_plan", brief_id, deliverable_count, channel_mix}`
 
 ## Handoff

@@ -1,7 +1,7 @@
 {
   "hooks": {
     "SessionStart": [{"hooks": [{"type": "command", "command": "echo RLM-Creative studio -- 8 Garland heads loaded", "timeout": 5}]}],
-    "PreToolUse": [{"matcher": "Write.*\\.(mp4|mov|wav|flac|png|jpg|jpeg)$", "hooks": [{"type": "command", "command": "powershell -File \"${CLAUDE_PLUGIN_ROOT}/hooks/pre-asset-write.ps1\"", "timeout": 10}]}],
-    "PostToolUse": [{"matcher": "Bash.*ffmpeg|ffprobe", "hooks": [{"type": "command", "command": "powershell -File \"${CLAUDE_PLUGIN_ROOT}/hooks/post-render-validate.ps1\"", "timeout": 15}]}]
+    "PreToolUse": [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "powershell -File \"${CLAUDE_PLUGIN_ROOT}/hooks/pre-asset-write.ps1\"", "timeout": 10}]}],
+    "PostToolUse": [{"matcher": "Bash|powershell", "hooks": [{"type": "command", "command": "powershell -File \"${CLAUDE_PLUGIN_ROOT}/hooks/post-render-validate.ps1\"", "timeout": 15}]}]
   }
 }

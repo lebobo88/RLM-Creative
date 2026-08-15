@@ -8,7 +8,7 @@ Convert the discovery notes from Phase 01 into a fully-populated, schema-valid `
 - **Mode**: AUTOMATED with one user confirmation before emit
 
 ## Inputs
-- `RLM/output/discovery/{topic}-{date}.md` (from Phase 01)
+- `RLM/output/brief/{topic}-{date}.md` (from Phase 01)
 - Any attached `CSuiteDecisionPacket` from Hermes
 - `eights.memory.recall` hits captured in Phase 01
 
@@ -48,7 +48,7 @@ Wait for explicit confirmation (or edits + re-render).
 
 ## Output
 1. Write `RLM/tasks/CAMPAIGN-{brief_id}.md` containing the full envelope as YAML frontmatter + the readable summary.
-2. Write the envelope JSON to `RLM/output/briefs/{brief_id}.json` via `rlm.output.write` with `domain="creative"`, `scopes=["team:garland-crew"]` plus `sensitive:client-confidential` if NDA noted.
+2. Write the envelope record to `RLM/output/brief/{brief_id}-{date}.md` via `rlm.output.write` with `domain="creative"`, `scopes=["team:garland-crew"]` plus `sensitive:client-confidential` if NDA noted.
 3. Call `eights.memory.remember(domain="creative", episode={"type":"brief_published","brief_id":..., "actor":"calliope", "summary":...})`.
 4. Emit the `CreativeBrief` envelope on Hydra's bus (the squad runtime handles this when the envelope JSON exists at the expected path).
 

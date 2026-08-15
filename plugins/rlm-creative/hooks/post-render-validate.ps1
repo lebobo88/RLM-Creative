@@ -1,29 +1,5 @@
 # =============================================================================
 # post-render-validate.ps1 - PostToolUse hook for RLM-Creative
-#
-# CONTRACT
-#   Triggered after any Bash tool invocation that calls ffmpeg or ffprobe.
-#
-#   Environment variables consumed:
-#     CLAUDE_HOOK_AGENT_NAME    - slug of the calling agent
-#     CLAUDE_AGENT_NAME         - fallback
-#     CLAUDE_HOOK_TOOL_NAME     - name of the tool that was called
-#     CLAUDE_HOOK_TOOL_OUTPUT   - stdout+stderr captured from the Bash call
-#     CLAUDE_HOOK_TOOL_EXIT_CODE - integer exit code from the Bash call
-#
-#   Behavior:
-#     1. Inspects CLAUDE_HOOK_TOOL_OUTPUT for a media output path.
-#     2. Attempts to parse ffmpeg/ffprobe timing for duration_ms.
-#     3. Appends one JSON-lines event to RLM/progress/events.jsonl.
-#        The rlm-bridge TheEights adapter tails this file for episodic memory.
-#     4. Prints one-line summary to stdout.
-#     5. ALWAYS exits 0 - this hook never blocks.
-#
-#   events.jsonl schema:
-#     {"ts":"<iso>","agent":"<slug>","tool":"<name>","output_path":"<path>",
-#      "duration_ms":<int|null>,"exit_code":<int>}
-#
-#   Idempotent: yes (append-only).  No third-party modules.
 # =============================================================================
 
 Set-StrictMode -Version Latest
@@ -33,63 +9,107 @@ function Get-ISOTimestamp {
     [datetime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
 }
 
-# ---------- resolve caller context -------------------------------------------
+function Test-HasProperty {
+    param($Object, [string]$Name)
+    if ($null -eq $Object) { return $false }
+    return @($Object.PSObject.Properties | ForEach-Object { $_.Name }) -contains $Name
+}
 
-$agentName = $env:CLAUDE_HOOK_AGENT_NAME
+# ---------- parse hook event -------------------------------------------------
+
+$rawHookInput = [Console]::In.ReadToEnd()
+if ([string]::IsNullOrWhiteSpace($rawHookInput)) { exit 0 }
+
+try {
+    $hookEvent = $rawHookInput | ConvertFrom-Json -ErrorAction Stop
+} catch {
+    exit 0
+}
+
+$command = ''
+if ((Test-HasProperty -Object $hookEvent -Name 'tool_input') -and $hookEvent.tool_input -and
+    (Test-HasProperty -Object $hookEvent.tool_input -Name 'command')) {
+    $command = [string]$hookEvent.tool_input.command
+} elseif ((Test-HasProperty -Object $hookEvent -Name 'command') -and $hookEvent.command) {
+    $command = [string]$hookEvent.command
+}
+
+if ($command -notmatch '(?i)\b(ffmpeg|ffprobe)(?:\.exe)?\b') { exit 0 }
+
+$agentName = ''
+foreach ($field in @('agent_type', 'agent_name')) {
+    if ((Test-HasProperty -Object $hookEvent -Name $field) -and $hookEvent.$field) {
+        $agentName = [string]$hookEvent.$field
+        break
+    }
+}
+if (-not $agentName) { $agentName = $env:CLAUDE_HOOK_AGENT_NAME }
 if (-not $agentName) { $agentName = $env:CLAUDE_AGENT_NAME }
-if (-not $agentName) { $agentName = 'unknown' }
-$agentSlug = $agentName.ToLower().Trim()
+$agentSlug = if ($agentName) { ($agentName -split ':')[-1].ToLower().Trim() } else { 'unknown' }
 
-$toolName = if ($env:CLAUDE_HOOK_TOOL_NAME) { $env:CLAUDE_HOOK_TOOL_NAME } else { 'Bash' }
+$toolName = if ((Test-HasProperty -Object $hookEvent -Name 'tool_name') -and $hookEvent.tool_name) { [string]$hookEvent.tool_name } else { 'Bash' }
 
-$rawExitCode = $env:CLAUDE_HOOK_TOOL_EXIT_CODE
 $exitCodeInt = 0
-if ($rawExitCode -match '^\-?\d+$') { $exitCodeInt = [int]$rawExitCode }
-
-$toolOutput = if ($env:CLAUDE_HOOK_TOOL_OUTPUT) { $env:CLAUDE_HOOK_TOOL_OUTPUT } else { '' }
-
-# ---------- extract output path ----------------------------------------------
-
-$outputPath = ''
-$mediaExtPattern = '\.(mp4|mov|wav|flac|png|jpg|jpeg|mkv|webm|aac|mp3)(?=[''"\s]|$)'
-
-if ($toolOutput -match "(?im)\bto\s+['""]([^'""]+\.(mp4|mov|wav|flac|png|jpg|jpeg|mkv|webm|aac|mp3))['""]") {
-    $outputPath = $Matches[1]
-} elseif ($toolOutput -match "(?im)\[out\]\s+([^\r\n]+$mediaExtPattern)") {
-    $outputPath = $Matches[1].Trim()
-} elseif ($toolOutput -match "(?im)((?:[A-Za-z]:\\|/)[^\r\n]*$mediaExtPattern)") {
-    $outputPath = $Matches[1].Trim()
+foreach ($field in @('tool_exit_code', 'exit_code')) {
+    if ((Test-HasProperty -Object $hookEvent -Name $field) -and [string]$hookEvent.$field -match '^-?\d+$') {
+        $exitCodeInt = [int]$hookEvent.$field
+        break
+    }
 }
 
-# ---------- extract duration -------------------------------------------------
+# ---------- ffmpeg argument state-machine tokenizer --------------------------
 
-$durationMs = $null
-$timeMatches = [regex]::Matches($toolOutput, 'time=(\d{2}):(\d{2}):(\d{2})\.(\d{2})')
-if ($timeMatches.Count -gt 0) {
-    $last = $timeMatches[$timeMatches.Count - 1]
-    $h  = [int]$last.Groups[1].Value
-    $m  = [int]$last.Groups[2].Value
-    $s  = [int]$last.Groups[3].Value
-    $cs = [int]$last.Groups[4].Value
-    $durationMs = ($h * 3600 + $m * 60 + $s) * 1000 + $cs * 10
+$tokens = @()
+$pattern = '(?:"([^"]*)"|\x27([^\x27]*)\x27|(\S+))'
+$tokenMatches = [regex]::Matches($command, $pattern)
+foreach ($m in $tokenMatches) {
+    if ($m.Groups[1].Success) { $tokens += $m.Groups[1].Value }
+    elseif ($m.Groups[2].Success) { $tokens += $m.Groups[2].Value }
+    else { $tokens += $m.Groups[3].Value }
 }
 
-# ---------- build event JSON -------------------------------------------------
+$outputPath = 'unknown'
+$paramFlags = @('-i', '-c', '-codec', '-c:v', '-c:a', '-b:v', '-b:a', '-vf', '-af',
+                '-filter_complex', '-preset', '-crf', '-pix_fmt', '-r', '-s', '-t',
+                '-ss', '-map', '-threads', '-y', '-n', '-f', '-v', '-loglevel')
 
-$ts = Get-ISOTimestamp
-$durationJson = if ($null -ne $durationMs) { $durationMs.ToString() } else { 'null' }
-$safeOutputPath = $outputPath.Replace('\', '\\').Replace('"', '\"')
-$safeAgent      = $agentSlug.Replace('"', '\"')
-$safeTool       = $toolName.Replace('"', '\"')
+$i = 0
+$nonFlagArgs = @()
+while ($i -lt $tokens.Count) {
+    $tok = $tokens[$i]
+    if ($tok.StartsWith('-')) {
+        if ($paramFlags -contains $tok.ToLower()) {
+            $i += 2  # skip flag and parameter
+            continue
+        }
+        $i++
+        continue
+    }
+    # ignore executable token
+    if ($tok -notmatch '(?i)\b(ffmpeg|ffprobe)(?:\.exe)?$') {
+        $nonFlagArgs += $tok
+    }
+    $i++
+}
 
-$eventLine = '{"ts":"' + $ts + '","agent":"' + $safeAgent + '","tool":"' + $safeTool +
-             '","output_path":"' + $safeOutputPath + '","duration_ms":' + $durationJson +
-             ',"exit_code":' + $exitCodeInt + '}'
+if ($nonFlagArgs.Count -gt 0) {
+    $cand = $nonFlagArgs[-1]
+    if ($cand -in @('-', 'NUL', '/dev/null')) {
+        $outputPath = 'stream/null'
+    } else {
+        $outputPath = $cand
+    }
+}
 
-# ---------- append to events.jsonl -------------------------------------------
+# ---------- mutex-synchronized JSONL append ----------------------------------
 
-$projectRoot = $env:HYDRA_RLM_CREATIVE_ROOT
-if (-not $projectRoot) { $projectRoot = $PSScriptRoot | Split-Path | Split-Path }
+$projectRoot = if ($env:HYDRA_RLM_CREATIVE_ROOT) {
+    $env:HYDRA_RLM_CREATIVE_ROOT
+} elseif ($env:CLAUDE_PLUGIN_ROOT) {
+    Split-Path (Split-Path $env:CLAUDE_PLUGIN_ROOT -Parent) -Parent
+} else {
+    (Get-Item $PSScriptRoot).Parent.Parent.FullName
+}
 
 $eventsDir  = Join-Path $projectRoot 'RLM\progress'
 $eventsFile = Join-Path $eventsDir   'events.jsonl'
@@ -98,19 +118,30 @@ if (-not (Test-Path $eventsDir)) {
     New-Item -ItemType Directory -Path $eventsDir -Force | Out-Null
 }
 
-$sw = $null
+$ts = Get-ISOTimestamp
+$eventObj = @{
+    ts = $ts
+    agent = $agentSlug
+    tool = $toolName
+    exit_code = $exitCodeInt
+    output_path = $outputPath.Replace('\', '/')
+}
+$eventJson = $eventObj | ConvertTo-Json -Compress
+
+$mutexName = "Global\RLM_Creative_Events_Jsonl_Lock"
+$mutex = New-Object System.Threading.Mutex($false, $mutexName)
+$acquired = $false
 try {
-    $sw = [System.IO.StreamWriter]::new($eventsFile, $true, [System.Text.Encoding]::UTF8)
-    $sw.WriteLine($eventLine)
+    $acquired = $mutex.WaitOne(5000)
+    if ($acquired) {
+        [System.IO.File]::AppendAllText($eventsFile, $eventJson + [Environment]::NewLine, [System.Text.Encoding]::UTF8)
+    } else {
+        [Console]::Error.WriteLine("WARN_MUTEX_TIMEOUT: Could not acquire lock for events.jsonl within 5s")
+    }
 } finally {
-    if ($sw) { $sw.Close() }
+    if ($acquired) { $mutex.ReleaseMutex() }
+    $mutex.Dispose()
 }
 
-# ---------- stdout summary ---------------------------------------------------
-
-$summary = "$(Get-ISOTimestamp) | post-render | agent=$agentSlug | exit=$exitCodeInt"
-if ($outputPath) { $summary += " | out=$outputPath" }
-if ($null -ne $durationMs) { $summary += " | duration_ms=$durationMs" }
-Write-Output $summary
-
+Write-Output "$(Get-ISOTimestamp) | post-render | agent=$agentSlug | out=$outputPath | exit=$exitCodeInt"
 exit 0
