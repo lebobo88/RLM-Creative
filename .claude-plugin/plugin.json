@@ -1,0 +1,10 @@
+{
+  "name": "rlm-creative",
+  "description": "RLM Creative Studio — Eight Garland Heads & Helios Production Sub-Crew",
+  "version": "1.0.0",
+  "strict": false,
+  "agents": ".claude/agents",
+  "skills": ".claude/skills",
+  "commands": ".claude/commands",
+  "hooks": "hooks.json"
+}

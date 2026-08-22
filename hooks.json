@@ -13,7 +13,7 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Write.*\\.(mp4|mov|wav|flac|png|jpg|jpeg)$",
+        "matcher": "Write.*\\.(mp4|mov|wav|flac|png|jpg|jpeg|glb|gltf|fbx|usd|blend)$",
         "hooks": [
           {
             "type": "command",

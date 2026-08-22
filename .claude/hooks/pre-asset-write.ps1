@@ -69,7 +69,7 @@ $normPath = $targetPath.Replace('\', '/')
 
 # ---------- media extension guard --------------------------------------------
 
-$mediaExts = @('.mp4', '.mov', '.wav', '.flac', '.png', '.jpg', '.jpeg')
+$mediaExts = @('.mp4', '.mov', '.wav', '.flac', '.png', '.jpg', '.jpeg', '.glb', '.gltf', '.fbx', '.usd', '.blend')
 $ext = [System.IO.Path]::GetExtension($normPath).ToLower()
 
 if ($ext -notin $mediaExts) {
@@ -85,15 +85,16 @@ $allowedAgents = @(
     'audio-foley',
     'music-score',
     'dialogue-mix',
-    'governance-c2pa'
+    'governance-c2pa',
+    'blender-model',
+    'blender-rig'
 )
 
 if ($agentSlug -notin $allowedAgents) {
     $refusal = @(
-        "BLOCKED: agent '$agentSlug' is not authorised to write media files.",
+        "BLOCKED: agent '$agentSlug' is not authorised to write media/3D asset files.",
         "Only Helios and its sub-crew (video-synth, audio-foley, music-score,",
-        "dialogue-mix, governance-c2pa) may produce *.mp4 / *.mov / *.wav /",
-        "*.flac / *.png / *.jpg / *.jpeg assets.",
+        "dialogue-mix, governance-c2pa, blender-model, blender-rig) may produce media & 3D assets.",
         "Route your request through Helios. See AGENTS.md for asset-write rules."
     ) -join ' '
     [Console]::Error.WriteLine($refusal)
